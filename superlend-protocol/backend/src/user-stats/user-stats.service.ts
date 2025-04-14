@@ -8,14 +8,14 @@ export class UserStatsService {
     '0x1234567890123456789012345678901234567890': {
       address: '0x1234567890123456789012345678901234567890',
       suppliedAssets: [
-        { symbol: 'ETH', amount: 2.5, usdValue: 5000 },
+        { symbol: 'ETH', amount: 2.5, usdValue: 5000 }, // ETH price around $2k
         { symbol: 'USDC', amount: 1000, usdValue: 1000 },
       ],
       borrowedAssets: [
         { symbol: 'DAI', amount: 2000, usdValue: 2000 },
       ],
-      healthFactor: 2.5,
-      netApy: 0.025,
+      healthFactor: 2.5, // pretty safe position
+      netApy: 0.025, // 2.5% positive APY
       totalSuppliedUsd: 6000,
       totalBorrowedUsd: 2000,
     },
@@ -26,21 +26,24 @@ export class UserStatsService {
         { symbol: 'ETH', amount: 10, usdValue: 20000 },
       ],
       borrowedAssets: [
-        { symbol: 'USDT', amount: 5000, usdValue: 5000 },
+        { symbol: 'USDT', amount: 5000, usdValue: 5000 }, 
         { symbol: 'USDC', amount: 10000, usdValue: 10000 },
       ],
-      healthFactor: 1.8,
-      netApy: -0.01,
+      healthFactor: 1.8, // a bit risky
+      netApy: -0.01, // negative APY - might need to adjust position
       totalSuppliedUsd: 35000,
       totalBorrowedUsd: 15000,
     },
   };
 
   async getUserStats(address: string): Promise<UserStats> {
-    const userStats = this.mockUserStats[address.toLowerCase()];
+    // Convert to lowercase to handle different case inputs
+    const userStatsKey = address.toLowerCase();
+    const userStats = this.mockUserStats[userStatsKey];
     
     if (!userStats) {
       // If user doesn't exist, return empty stats
+      // Could throw error instead but this is probably better UX
       return this.createEmptyUserStats(address);
     }
     
@@ -48,6 +51,7 @@ export class UserStatsService {
   }
 
   private createEmptyUserStats(address: string): UserStats {
+    // Default values for new users
     return {
       address,
       suppliedAssets: [],

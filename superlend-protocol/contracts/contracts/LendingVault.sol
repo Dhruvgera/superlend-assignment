@@ -3,49 +3,69 @@ pragma solidity ^0.8.0;
 
 /**
  * @title LendingVault
- * @dev A minimal smart contract that allows users to deposit and withdraw tokens
+ * @dev A minimal lending vault for the SuperLend protocol
+ * @notice This is a simplified implementation without actual tokens
+ * @author Dhruv Gera
  */
 contract LendingVault {
-    // Mapping from user address to deposit amount
+    // Track how much each user has deposited
     mapping(address => uint256) private userDeposits;
     
-    // Event emitted when a user deposits tokens
+    // Events
     event Deposit(address indexed user, uint256 amount);
-    
-    // Event emitted when a user withdraws tokens
     event Withdraw(address indexed user, uint256 amount);
 
+    // Some statistics
+    uint256 public totalDeposited; // track total deposits across all users
+    
+    // Constructor - nothing needed for now
+    constructor() {
+        // can add owner/admin logic
+    }
+
     /**
-     * @dev Deposit tokens into the vault
-     * @param amount The amount of tokens to deposit
+     * @dev Let a user deposit tokens into the vault
+     * @param amount How many tokens to deposit
      */
     function deposit(uint256 amount) external {
+        // Make sure they're actually depositing something
         require(amount > 0, "Deposit amount must be greater than 0");
         
+        // Update the user's balance
         userDeposits[msg.sender] += amount;
         
+        // Update stats
+        totalDeposited += amount;
+        
+        // Let the world know
         emit Deposit(msg.sender, amount);
     }
     
     /**
-     * @dev Withdraw tokens from the vault
-     * @param amount The amount of tokens to withdraw
+     * @dev Allows a user to withdraw their tokens 
+     * @param amount Amount to withdraw
      */
     function withdraw(uint256 amount) external {
         require(amount > 0, "Withdraw amount must be greater than 0");
         require(userDeposits[msg.sender] >= amount, "Insufficient balance");
         
+        // Update balances
         userDeposits[msg.sender] -= amount;
+        totalDeposited -= amount;
         
         emit Withdraw(msg.sender, amount);
     }
     
     /**
-     * @dev Get the deposit amount for a specific user
-     * @param user The address of the user
-     * @return The user's deposit amount
+     * @dev Check how much a user has deposited
+     * @param user Address to check
      */
     function getUserDeposit(address user) external view returns (uint256) {
         return userDeposits[user];
     }
+
+    // Future scope:
+    // - borrow()
+    // - repay()
+    // - liquidate()
 } 
