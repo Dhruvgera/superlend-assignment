@@ -30,9 +30,11 @@ The API will be available at http://localhost:3000
 
 ### API Endpoints
 
-#### GET /user-stats/:address
+#### GET /user-stats/address
 
 Returns lending statistics for a specific Ethereum address.
+
+Addresses which can be used as mock-data: 0x1234567890123456789012345678901234567890 or 0xabcdef0123456789abcdef0123456789abcdef01
 
 Response includes:
 - Total supplied assets and their USD value
